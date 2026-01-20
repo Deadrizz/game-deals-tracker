@@ -1,17 +1,19 @@
-from decimal import Decimal
 import random
+from decimal import Decimal
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from deals.models import Store, Deal
+from deals.models import Deal, Store
 
 
 class Command(BaseCommand):
     help = "Seed database with demo stores and deals"
 
     def handle(self, *args, **options):
-        steam, _ = Store.objects.get_or_create(external_id=1, defaults={"name": "Steam"})
+        steam, _ = Store.objects.get_or_create(
+            external_id=1, defaults={"name": "Steam"}
+        )
         gog, _ = Store.objects.get_or_create(external_id=2, defaults={"name": "GOG"})
 
         stores = [steam, gog]
@@ -33,7 +35,9 @@ class Command(BaseCommand):
             store = random.choice(stores)
             normal = Decimal(random.choice(["19.99", "29.99", "39.99", "59.99"]))
             discount = random.choice([10, 20, 30, 40, 50, 60, 70, 80])
-            sale = (normal * (Decimal("100") - Decimal(discount)) / Decimal("100")).quantize(Decimal("0.01"))
+            sale = (
+                normal * (Decimal("100") - Decimal(discount)) / Decimal("100")
+            ).quantize(Decimal("0.01"))
 
             deal, was_created = Deal.objects.update_or_create(
                 external_id=1000 + i,

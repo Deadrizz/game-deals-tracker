@@ -1,21 +1,21 @@
 from decimal import Decimal
 
 import pytest
+from deals.models import Deal, Store
 from model_bakery import baker
 from rest_framework.test import APIClient
-from deals.models import Store,Deal
+
+
 @pytest.fixture
 def api_client():
     return APIClient()
-
-
 
 
 @pytest.fixture
 def sample_deals(db):
     steam = baker.make(Store, name="Steam", external_id=1)
     gog = baker.make(Store, name="GOG", external_id=2)
-    stores = steam,gog
+    stores = steam, gog
     baker.make(
         Deal,
         store=steam,
