@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Deal, Store
+from .models import Deal, Store,Subscriber,Subscription
 
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -28,3 +28,19 @@ class DealSerializer(serializers.ModelSerializer):
             "last_seen_at",
             "is_active",
         ]
+
+
+class SubscriberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscriber
+        fields = ['id','telegram_chat_id']
+
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(source='store.name',read_only=True)
+    chat_id = serializers.IntegerField(source='telegram_user.telegram_chat_id',read_only=True)
+
+    class Meta:
+        model = Subscription
+        fields = ['id','telegram_user','chat_id','store','min_discount','max_price','query','is_active']
