@@ -32,3 +32,36 @@ class Deal(models.Model):
         return (
             f"{self.title} - {self.store} - {self.sale_price} - {self.discount_percent}"
         )
+
+
+class Subscriber(models.Model):
+    telegram_chat_id = models.IntegerField(unique=True)
+
+
+
+class Subscription(models.Model):
+    telegram_user = models.ForeignKey(Subscriber,on_delete=models.SET_NULL,related_name='subscriptions',null=True,blank=True)
+    store = models.ForeignKey(Store,on_delete=models.CASCADE,related_name='watched_subscriptions',null=True,blank=True)
+    min_discount = models.IntegerField(default=0)
+    max_price = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
+    query = models.CharField(max_length=120,blank=True,default='')
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return (
+            f"{self.telegram_user} - {self.store} - {self.max_price} - {self.min_discount} - {self.query} - {self.is_active}"
+        )
+
+class NotificationLog(models.Model):
+    telegram_user = models.ForeignKey(Subscriber,on_delete=models.CASCADE,related_name='notifications')
+    deal = models.ForeignKey(Deal,on_delete=models.CASCADE,related_name='notifications')
+    sent_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints = [models.UniqueConstraint(
+            fields=['telegram_user','deal'],
+            name='unique_subscriber_deal'
+        )]
+    def __str__(self):
+        return (
+            f"{self.telegram_user} - {self.deal} - {self.sent_at}"
+        )

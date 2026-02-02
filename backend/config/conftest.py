@@ -1,4 +1,6 @@
+from datetime import timedelta
 from decimal import Decimal
+from django.utils import timezone
 
 import pytest
 from deals.models import Deal, Store
@@ -53,3 +55,36 @@ def sample_deals(db):
         url="https://example.com/1003",
     )
     return stores
+
+@pytest.fixture
+def sample_deals_for_days(db):
+    steam = baker.make(Store, name="Steam", external_id=1)
+    gog = baker.make(Store, name="GOG", external_id=2)
+    stores = steam, gog
+    deal_1 = baker.make(
+        Deal,
+        store=steam,
+        title="The Witcher 3",
+        discount_percent=80,
+        normal_price=Decimal("59.99"),
+        sale_price=Decimal("11.99"),
+        currency="EUR",
+        is_active=True,
+        external_id=1001,
+        url="https://example.com/1005",
+        last_seen_at=timezone.now() - timedelta(days=8)
+    )
+    deal_2 = baker.make(
+        Deal,
+        store=gog,
+        title="Hades",
+        discount_percent=40,
+        normal_price=Decimal("24.99"),
+        sale_price=Decimal("14.99"),
+        currency="EUR",
+        is_active=True,
+        external_id=1002,
+        url="https://example.com/1004",
+        last_seen_at=timezone.now()
+    )
+    return deal_1,deal_2
