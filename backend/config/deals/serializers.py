@@ -43,4 +43,4 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscription
-        fields = ['id','telegram_user','chat_id','store','min_discount','max_price','query','is_active']
+        fields = ['id','telegram_user','chat_id','store','store_name','min_discount','max_price','query','is_active']
