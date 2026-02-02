@@ -43,4 +43,16 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscription
-        fields = ['id','telegram_user','chat_id','store','store_name','min_discount','max_price','query','is_active']
+        fields = ['id','chat_id','store','store_name','min_discount','max_price','query','is_active']
+
+
+    def validate_max_price(self,value):
+        if value is not None:
+            if value<=0:
+                raise serializers.ValidationError('Max price should be positive number')
+        return value
+
+    def validate_min_discount(self,value):
+        if value > 100 or value < 0:
+            raise serializers.ValidationError('Min discount should be from 0% to 100%')
+        return value

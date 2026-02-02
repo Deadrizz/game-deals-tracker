@@ -27,7 +27,7 @@ class SubscriberViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 
-class SubscriptionViewSet(viewsets.ReadOnlyModelViewSet):
+class SubscriptionViewSet(viewsets.ModelViewSet):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
     ordering = ['id','is_active']
