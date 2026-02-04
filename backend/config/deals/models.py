@@ -56,6 +56,7 @@ class NotificationLog(models.Model):
     telegram_user = models.ForeignKey(Subscriber,on_delete=models.CASCADE,related_name='notifications')
     deal = models.ForeignKey(Deal,on_delete=models.CASCADE,related_name='notifications')
     sent_at = models.DateTimeField(auto_now_add=True)
+    is_sent = models.BooleanField(default=False)
     class Meta:
         constraints = [models.UniqueConstraint(
             fields=['telegram_user','deal'],

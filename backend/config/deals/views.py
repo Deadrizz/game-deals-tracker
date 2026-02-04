@@ -1,12 +1,13 @@
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
+from rest_framework.templatetags.rest_framework import items
 from rest_framework.views import APIView
 from .filters import DealFilter
 from .models import Deal, Store,Subscription,Subscriber,NotificationLog
 from .serializers import DealSerializer, StoreSerializer,SubscriptionSerializer,SubscriberSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from deals.services.notifications import noti_demo_telegram
+from deals.services.notifications import noti_demo_telegram,send_notification
 
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,3 +57,11 @@ class NotificationLogAPIView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         created = noti_demo_telegram(int(chat_id))
         return Response({'created':created})
+
+class DispatchNotificationsAPIView(APIView):
+    def post(self,request,*args,**kwargs):
+        chat_id = request.query_params.get('chat_id')
+        if chat_id is None or not chat_id.isdigit():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        items = send_notification(int(chat_id))
+        return Response({'items':items,'count':len(items)})

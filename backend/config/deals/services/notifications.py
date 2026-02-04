@@ -3,7 +3,7 @@ from datetime import timedelta
 from decimal import Decimal
 from django.utils import timezone
 
-from deals.models import Deal, Store,Subscription,NotificationLog
+from deals.models import Deal, Store,Subscription,NotificationLog,Subscriber
 
 
 
@@ -30,3 +30,19 @@ def noti_demo_telegram(chat_id:int|None)->int:
                 created_logs+=1
     return created_logs
 
+
+def send_notification(chat_id:int):
+    result = []
+    sent_ids = []
+    subscriber = Subscriber.objects.get(telegram_chat_id=chat_id)
+    notifications = NotificationLog.objects.filter(telegram_user=subscriber,is_sent=False).select_related('deal','deal__store')
+    for noti in notifications[:10]:
+        sent_ids.append(noti.id)
+        noti_dict = {'title':noti.deal.title,
+                     'store':noti.deal.store.name or None,
+                     'sale_price':noti.deal.sale_price,
+                     'discount_percent':noti.deal.discount_percent,
+                     'url':noti.deal.url}
+        result.append(noti_dict)
+    NotificationLog.objects.filter(id__in=sent_ids).update(is_sent=True)
+    return result

@@ -38,7 +38,7 @@ class SubscriberSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    store_name = serializers.CharField(source='store.name',read_only=True)
+    store_name = serializers.SerializerMethodField(source='store.name',read_only=True)
     chat_id = serializers.IntegerField(source='telegram_user.telegram_chat_id',read_only=True)
 
     class Meta:
@@ -56,3 +56,6 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         if value > 100 or value < 0:
             raise serializers.ValidationError('Min discount should be from 0% to 100%')
         return value
+    def get_store_name(self,obj):
+        return obj.store.name if obj.store else None
+
