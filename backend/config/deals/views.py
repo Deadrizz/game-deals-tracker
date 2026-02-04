@@ -1,9 +1,12 @@
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
-
+from rest_framework.views import APIView
 from .filters import DealFilter
-from .models import Deal, Store,Subscription,Subscriber
+from .models import Deal, Store,Subscription,Subscriber,NotificationLog
 from .serializers import DealSerializer, StoreSerializer,SubscriptionSerializer,SubscriberSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from deals.services.notifications import noti_demo_telegram
 
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
@@ -44,3 +47,12 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             raise ValidationError()
         subscription,_ = Subscriber.objects.get_or_create(telegram_chat_id=chat_id)
         return serializer.save(telegram_user=subscription)
+
+
+class NotificationLogAPIView(APIView):
+    def post(self,request,*args,**kwargs):
+        chat_id = request.query_params.get('chat_id')
+        if chat_id is None or not chat_id.isdigit():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        created = noti_demo_telegram(int(chat_id))
+        return Response({'created':created})

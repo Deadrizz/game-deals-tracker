@@ -8,9 +8,12 @@ from deals.models import Deal, Store,Subscription,NotificationLog
 
 
 
-def noti_demo_telegram()->int:
+def noti_demo_telegram(chat_id:int|None)->int:
     created_logs = 0
-    subscription = Subscription.objects.filter(is_active=True)
+    if chat_id is not None:
+        subscription = Subscription.objects.filter(telegram_user__telegram_chat_id=chat_id,is_active=True)
+    else:
+        subscription = Subscription.objects.filter(is_active=True)
     for sub in subscription:
         deals = Deal.objects.filter(is_active=True)
         if sub.store:
