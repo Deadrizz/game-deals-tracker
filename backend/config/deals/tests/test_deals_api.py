@@ -76,7 +76,7 @@ def test_deactivate_old_deals(sample_deals_for_days):
     deal_2.refresh_from_db()
     deal_1.refresh_from_db()
     assert result == 1
-    assert deal_1.is_active is  False
+    assert deal_1.is_active is False
     assert deal_2.is_active is True
 
 
