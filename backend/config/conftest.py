@@ -1,9 +1,9 @@
 from datetime import timedelta
 from decimal import Decimal
-from django.utils import timezone
 
 import pytest
 from deals.models import Deal, Store
+from django.utils import timezone
 from model_bakery import baker
 from rest_framework.test import APIClient
 
@@ -56,6 +56,7 @@ def sample_deals(db):
     )
     return stores
 
+
 @pytest.fixture
 def sample_deals_for_days(db):
     steam = baker.make(Store, name="Steam", external_id=1)
@@ -72,7 +73,7 @@ def sample_deals_for_days(db):
         is_active=True,
         external_id=1001,
         url="https://example.com/1005",
-        last_seen_at=timezone.now() - timedelta(days=8)
+        last_seen_at=timezone.now() - timedelta(days=8),
     )
     deal_2 = baker.make(
         Deal,
@@ -85,6 +86,6 @@ def sample_deals_for_days(db):
         is_active=True,
         external_id=1002,
         url="https://example.com/1004",
-        last_seen_at=timezone.now()
+        last_seen_at=timezone.now(),
     )
-    return deal_1,deal_2
+    return deal_1, deal_2

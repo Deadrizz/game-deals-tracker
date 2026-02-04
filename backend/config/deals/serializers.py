@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Deal, Store,Subscriber,Subscription
+from .models import Deal, Store, Subscriber, Subscription
 
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -33,29 +33,38 @@ class DealSerializer(serializers.ModelSerializer):
 class SubscriberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscriber
-        fields = ['id','telegram_chat_id']
-
+        fields = ["id", "telegram_chat_id"]
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    store_name = serializers.SerializerMethodField(source='store.name',read_only=True)
-    chat_id = serializers.IntegerField(source='telegram_user.telegram_chat_id',read_only=True)
+    store_name = serializers.SerializerMethodField(source="store.name", read_only=True)
+    chat_id = serializers.IntegerField(
+        source="telegram_user.telegram_chat_id", read_only=True
+    )
 
     class Meta:
         model = Subscription
-        fields = ['id','chat_id','store','store_name','min_discount','max_price','query','is_active']
+        fields = [
+            "id",
+            "chat_id",
+            "store",
+            "store_name",
+            "min_discount",
+            "max_price",
+            "query",
+            "is_active",
+        ]
 
-
-    def validate_max_price(self,value):
+    def validate_max_price(self, value):
         if value is not None:
-            if value<=0:
-                raise serializers.ValidationError('Max price should be positive number')
+            if value <= 0:
+                raise serializers.ValidationError("Max price should be positive number")
         return value
 
-    def validate_min_discount(self,value):
+    def validate_min_discount(self, value):
         if value > 100 or value < 0:
-            raise serializers.ValidationError('Min discount should be from 0% to 100%')
+            raise serializers.ValidationError("Min discount should be from 0% to 100%")
         return value
-    def get_store_name(self,obj):
-        return obj.store.name if obj.store else None
 
+    def get_store_name(self, obj):
+        return obj.store.name if obj.store else None

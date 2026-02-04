@@ -1,14 +1,13 @@
 import random
 from datetime import timedelta
 from decimal import Decimal
-from django.utils import timezone
 
 from deals.models import Deal, Store
+from django.utils import timezone
 
-def seed_demo_deals()->int:
-    steam, _ = Store.objects.get_or_create(
-        external_id=1, defaults={"name": "Steam"}
-    )
+
+def seed_demo_deals() -> int:
+    steam, _ = Store.objects.get_or_create(external_id=1, defaults={"name": "Steam"})
     gog, _ = Store.objects.get_or_create(external_id=2, defaults={"name": "GOG"})
 
     stores = [steam, gog]
@@ -54,8 +53,10 @@ def seed_demo_deals()->int:
     return created
 
 
-def deactivate_old_deals(days:int = 7)->int:
+def deactivate_old_deals(days: int = 7) -> int:
     time_now = timezone.now()
-    time_active_deals = time_now-timedelta(days=days)
-    result = Deal.objects.filter(last_seen_at__lt=time_active_deals,is_active=True).update(is_active=False)
+    time_active_deals = time_now - timedelta(days=days)
+    result = Deal.objects.filter(
+        last_seen_at__lt=time_active_deals, is_active=True
+    ).update(is_active=False)
     return result
