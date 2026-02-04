@@ -61,7 +61,6 @@ def sample_deals(db):
 def sample_deals_for_days(db):
     steam = baker.make(Store, name="Steam", external_id=1)
     gog = baker.make(Store, name="GOG", external_id=2)
-    stores = steam, gog
     deal_1 = baker.make(
         Deal,
         store=steam,

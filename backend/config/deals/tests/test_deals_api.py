@@ -76,13 +76,13 @@ def test_deactivate_old_deals(sample_deals_for_days):
     deal_2.refresh_from_db()
     deal_1.refresh_from_db()
     assert result == 1
-    assert deal_1.is_active == False
-    assert deal_2.is_active == True
+    assert deal_1.is_active is  False
+    assert deal_2.is_active is True
 
 
 @pytest.mark.django_db
 def test_seed_demo_deals():
-    start_1 = seed_demo_deals()
+    seed_demo_deals()
     count_1 = Deal.objects.count()
     start_2 = seed_demo_deals()
     count_2 = Deal.objects.count()
