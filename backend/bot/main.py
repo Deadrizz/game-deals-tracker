@@ -81,7 +81,8 @@ def text_message(message):
 @bot.message_handler(commands=['notify'])
 def notify(message):
     user_id = message.chat.id
-    request = requests.post(f'{API_URL}/api/notification/dispatch/?chat_id={user_id}')
+    bot.send_message(user_id,'Calling api')
+    request = requests.post(f'{API_URL}/api/notification/dispatch/?chat_id={user_id}',timeout=5)
     if request.status_code == 200:
         data = request.json()
         if data['count'] == 0:
@@ -97,8 +98,5 @@ def notify(message):
                 bot.send_message(user_id,f'You have deals(Title:{title},store:{store},sale price:{sale_price},discount:{discount},url:{url})')
             else:
                 bot.send_message(user_id,f'You have deals(Title:{title},store:Any store,sale price:{sale_price},discount:{discount},url:{url})')
-    else:
-        bot.send_message(user_id,f'{request.status_code}and{request.text[:200]}')
-    return None
-
+        return None
 bot.polling()
